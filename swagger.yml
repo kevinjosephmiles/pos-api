@@ -1,0 +1,962 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: SmartPay POS API
+servers:
+  - url: http://api.smartpay.com/v1
+paths:
+  /activation:
+    post:
+      summary: Create an Activation
+      operationId: createActivation
+      tags:
+        - activation
+      requestBody:
+        description: Create an Activation
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateActivationRequest'
+      responses:
+        '200':
+          description: An array of locations
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/CreateActivationResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+  /activation/search:
+    post:
+      summary: Search for Activations
+      operationId: searchActivations
+      tags:
+        - activation
+      requestBody:
+        description: Search for Activations
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchActivationsRequest'
+      responses:
+        '200':
+          description: List of Activations matching search criteria
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/SearchActivationsResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+  /activation/{id}:
+    get:
+      summary: Retrieve an Activation
+      operationId: getActivation
+      tags:
+        - activation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The unique Activation ID
+      responses:
+        '200':
+          description: Requested Activation is returned
+          content:
+            application/json:    
+              schema:
+                required:
+                  - activation
+                properties:
+                  id: 
+                    type: string
+        '404':
+          description: Requested Activation is not found
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a Activation
+      operationId: deleteActivation
+      tags:
+        - activation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The unique Activation ID
+      responses:
+        '200':
+          description: Response of Deleted Activation
+          content:
+            application/json:    
+              schema:
+                required:
+                  - id
+                properties:
+                  id: 
+                    type: string
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /customer:
+    post:
+      summary: Create a customer
+      operationId: createCustomer
+      tags:
+        - customer
+      requestBody:
+        description: Create a Customer
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCustomerRequest'
+      responses:
+        '200':
+          description: Customer Created
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/CreateCustomerResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+  /customer/search:
+    post:
+      summary: Search for Customers
+      operationId: searchCustomers
+      tags:
+        - customer
+      requestBody:
+        description: Search for Customers
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchCustomerRequest'
+      responses:
+        '200':
+          description: List of Customers matching search criteria
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/SearchCustomerResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+  /customer/{id}:
+    delete:
+      summary: Delete a customer
+      operationId: deleteCustomer
+      tags:
+        - customer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The unique customer ID
+      responses:
+        '200':
+          description: Validation of Deleted Customer
+          content:
+            application/json:    
+              schema:
+                required:
+                  - id
+                  - errors
+                properties:
+                  id:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ResponseError"
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+  /customer/{id}/approval:
+    post:
+      summary: Fetch a Customer Approval 
+      operationId: customerApproval
+      tags:
+        - customer
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The unique customer ID
+      responses:
+        '200':
+          description: Approval of specified Customer
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/GetCustomerApprovalResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /locations:
+    get:
+      summary: List all locations for Client 
+      operationId: listLocations
+      tags:
+        - location
+      parameters:
+        - name: client_id
+          in: query
+          description: This is the ID we provide for our partner
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: An array of locations 
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/SearchLocationsResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+  /location/search:
+    post:
+      summary: Search for Locations
+      operationId: searchLocations
+      tags:
+        - location
+      requestBody:
+        description: Search for Locations
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchLocationsRequest'
+      responses:
+        '200':
+          description: List of Locations that match search criteria
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/SearchLocationsResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+  /order:
+    post:
+      summary: Create an Order
+      operationId: createOrder
+      tags:
+        - order
+      requestBody:
+        description: Create an Order
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '200':
+          description: An array of locations
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/CreateOrderResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+  /order/search:
+    post:
+      summary: Search for Orders
+      operationId: searchOrders
+      tags:
+        - order
+      requestBody:
+        description: Search for Orders
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchOrdersRequest'
+      responses:
+        '200':
+          description: List of Orderss matching search criteria
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/SearchOrdersResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+  /order/{id}:
+    get:
+      summary: Retrieve an Order
+      operationId: getOrder
+      tags:
+        - order
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The unique Order ID
+      responses:
+        '200':
+          description: Requested Order is returned
+          content:
+            application/json:    
+              schema:
+                required:
+                  - order
+                properties:
+                  order: 
+                    $ref: "#/components/schemas/Order"
+        '404':
+          description: Requested Order is not found
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete an Order
+      operationId: deleteOrder
+      tags:
+        - order
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The unique Order ID
+      responses:
+        '200':
+          description: Response of Deleted Order
+          content:
+            application/json:    
+              schema:
+                required:
+                  - order
+                properties:
+                  order: 
+                    $ref: "#/components/schemas/Order"
+        default:
+          description: unexpected error
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /systemstatus:
+    post:
+      summary: Query a System Status
+      operationId: querySystemStatus
+      tags:
+        - systemstatus
+      requestBody:
+        description: Query a Client System Status
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemStatusRequest'
+      responses:
+        '200':
+          description: System Status for specified client
+          content:
+            application/json:    
+              schema:
+                $ref: '#/components/schemas/SystemStatusResponse'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Address:
+      required:
+        - address_line_1
+        - city
+        - state
+        - county
+        - zip_code
+      properties:
+        address_line_1:
+          description: The 1st line address for the customer
+          type: string
+        address_line_2:
+          description: The 2nd line address for the customer
+          type: string
+        city:
+          description: Name of City
+          type: string
+        state:
+          description: Two letter abreviation for State
+          type: string
+        county:
+          description: Name of Country
+          type: string
+        zip_code:
+          description: Valid Zipcode
+          type: string
+
+    Order: 
+      required:
+        - id
+        - customer_id
+        - application_id
+      properties:
+        id: 
+          description: The unique order ID
+          type: string
+        customer_id:
+          description: The unique ID of the Customer
+          type: string
+        application_id:
+          description: The unique Application ID created for the customer
+          type: string
+        line_items:
+          description: The list of cart items based on line_item object
+          type: array
+          items:
+            $ref: "#/components/schemas/LineItem"
+        amount:
+          description: The total amount for the cart
+          type: number
+        status:
+          description: The transaction status.
+          type: string
+          enum: ["Pending", "Complete", "Expired"]
+        transaction_type:
+          description: The transaction type.
+          type: string
+          enum: ["Sale", "Return", "Exchange", "Adjustment"]
+
+    LineItem:
+      required:
+        - id
+        - name
+        - quantity
+        - retail_price
+        - type
+        - tax
+      properties:
+        id: 
+          description: The unique ID for the line item
+          type: string
+        name:
+          description: The name of the line item
+          type: string
+        quantity:  
+          description: The quantity of that line item in cart  valid positive integer (>= 0)
+          type: string
+        retail_price:
+          description: The retail price of the line item  amount in cents
+          type:  string
+        SKU:  
+          description: The SKU for the line item  (cannot be blank for phones)
+          type:  string
+        serial_number:  
+          description: The serial number for the line item  (cannot be blank for phones)
+          type:  string
+        description:
+          description: The written description for the line item  valid text (can be blank)
+          type:  string
+        sim:  
+          description: The SIM card number for the activation  (cannot be blank for phones)
+          type:  string
+        imei:  
+          description: The IMEI/ESN number for the activation  (cannot be blank for phones)
+          type:  string
+        phone_number:  
+          description: The phone number being activated  (cannot be blank for phones)
+          type:  string
+        activation_id:  
+          description: The unique ID for the activation request for this transaction.  activation ID from POS
+          type:  string
+        type:
+          description: The item type for the line item
+          type: string
+        tax:
+          description: The tax applied to the line item
+          type: string
+        discount: 
+          description: The tax applied to the line item
+          type: string
+
+    Location:
+      required:
+        - id
+        - name
+        - merchant_name
+      properties:
+        id:
+          type: string
+          description: A combination of merchant_id and login_id. e.g. metroCA2@metroPCS
+        name:
+          type: string
+          description: The store name
+        merchant_name:
+          type: string
+          description: The ID of the merchant to which the store belongs to, e.g. "MetroPCS"
+        phone_number:
+          type: string
+          description: The contact phone number for the store location
+        store_address:
+          description: The store address
+          $ref: "#/components/schemas/Address"
+        business_legal_name:
+          type: string
+          description: The business name for the store
+        dba:
+          type: string
+          description: The business name for the business owning the store, or dealer business name
+        store_login_id:
+          type: string 
+          description: The store login ID provided by SmartPay
+        dealer_code:
+          type: string
+          description: The dealer code/sales portal ID which the merchants provide the dealers for the particular store
+
+    Customer:
+      required:
+        - id
+        - fist_name
+        - last_name
+        - phone_number
+        - identifier_number_short
+        - date_of_birth
+        - customer_address
+        - email
+      properties:
+        id:
+          description: The unique ID for a Customer
+          type: string
+        fist_name:
+          description: The legal first name of the customer
+          type: string
+        last_name:
+          description: The legal last name of the customer
+          type: string
+        phone_number:
+          description: The contact phone number of the customer
+          type: string
+        identifier_number_short:
+          description: The last 4 SSN/ITIN of the customer
+          type: string
+        date_of_birth:
+          description: The DOB of the customer
+          type: string
+          format: date
+        address:
+          description: The physical address for the customer
+          $ref: "#/components/schemas/Address"
+        email:
+          description: The contact email address for the customer
+          type: string
+          format: email
+
+    Activation:
+      required:
+        - id
+        - fist_name
+        - last_name
+        - phone_number
+        - identifier_number_short
+        - date_of_birth
+        - customer_address
+        - email
+      properties:
+        id:
+          description: The unique ID for a Customer
+          type: string
+        fist_name:
+          description: The legal first name of the customer
+          type: string
+        last_name:
+          description: The legal last name of the customer
+          type: string
+        phone_number:
+          description: The contact phone number of the customer
+          type: string
+        identifier_number_short:
+          description: The last 4 SSN/ITIN of the customer
+          type: string
+        date_of_birth:
+          description: The DOB of the customer
+          type: string
+          format: date
+        address:
+          description: The physical address for the customer
+          $ref: "#/components/schemas/Address"
+        email:
+          description: The contact email address for the customer
+          type: string
+          format: email
+
+    ResponseError:
+      required:
+        - error_code
+        - error_description
+      properties:
+        error_code:
+          type: string
+          description: The error code returned whether the API call was successful or not
+        error_description:
+          type: string
+          description: The description of the error code
+          
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+          
+    SearchActivationsRequest:
+      required:
+        - location_id
+      properties:
+        location_id:
+          description: The ID of the specific location
+          type: string
+        client_id:
+          description: The ID we provide for our partner
+          type: string
+        customer_id:
+          description: The customer unique ID
+          type: string
+
+    SearchActivationsResponse:
+      required:
+        - results
+      properties:
+        results:
+          description: A list of Activations that match the search Criteria
+          type: array
+          items:
+            $ref: "#/components/schemas/Activation"
+
+    CreateActivationRequest:
+      required:
+        - client_id
+        - location_id
+        - application_id
+        - line_items
+        - amount
+        - activation_type
+      properties:
+        client_id:
+          description: The ID we provide for our partner
+          type: string
+        location_id:
+          description: The ID of the specific location
+          type: string
+        application_id:
+          description: The unique Application ID created for the customer
+          type: string
+        line_items:
+          description: The list of cart items based on line_item object
+          type: array
+          items:
+            $ref: "#/components/schemas/LineItem"
+        amount:
+          description: The total amount for the cart
+          type: string
+        activation_type:
+          description: The activation type. Can be "Sale", "Return", "Exchange", "Adjustment"
+          type: string
+          enum: ["Sale", "Return", "Exchange", "Adjustment"]
+        customer:
+          description: Customer being created
+          $ref: "#/components/schemas/Customer"
+
+    CreateActivationResponse:
+      required:
+        - activation
+        - url
+        - error
+      properties:
+        activation:
+          $ref: "#/components/schemas/Activation"
+
+    SearchLocationsRequest:
+      required:
+        - client_id
+      properties:
+        client_id:
+          description: The unique Client ID that we provide
+          type: string
+            
+    SearchLocationsResponse:
+      required:
+        - client_id
+      properties:
+        client_id:
+          description: The unique Client ID that we provide
+          type: string
+        locations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Location"
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResponseError"
+            
+    SystemStatusResponse:
+      required:
+        - client_id
+        - local_date_time
+        - server_date_time
+        - error
+      properties:
+        client_id:
+          description: The unique Client ID that we provide
+          type: string
+        location_id:
+          type: string
+        server_date_time:
+          type: string
+        local_date_time:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResponseError"
+
+    SystemStatusRequest:
+      required:
+        - client_id
+        - local_date_time
+      properties:
+        client_id:
+          description: The unique Client ID that we provide
+          type: string
+        location_id:
+          type: string
+        local_date_time:
+          type: string
+
+    GetCustomerApprovalResponse:
+      required:
+        - id
+        - created_at
+        - state
+        - errors
+      properties:
+        id:
+          description: The unique Customer ID
+          type: string
+        customer:
+          $ref: "#/components/schemas/Customer"
+        created_at:
+          type: string
+        application_id:
+          type: string
+        state:
+          type: string
+        approved_at:
+          type: string
+        approval_limit:
+          type: string
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResponseError"
+
+    SearchCustomerRequest:
+      required:
+        - identifier_number_short
+        - date_of_birth
+      properties:
+        id:
+          description: The unique Customer ID
+          type: string
+        location_id:
+          description: The ID of the specific location
+          type: string
+        identifier_number_short:
+          description: The last 4 SSN/ITIN of the customer
+          type: string
+        date_of_birth:
+          description: The DOB of the customer - format - yyyy-mm-dd
+          type: string
+
+    SearchCustomerResponse:
+      required:
+        - customers
+      properties:
+        results:
+          description: List of Customers matching search Criteria
+          type: array
+          items:
+            $ref: "#/components/schemas/Customer"
+
+    CreateCustomerRequest:
+      required:
+        - client_id
+        - location_id
+        - transaction_type
+      properties:
+        client_id:
+          description: The unique Client ID that we provide
+          type: string
+        location_id:
+          description: The ID of the specific location
+          type: string
+        transaction_type:
+          description: The transaction type.
+          type: string
+          enum: ["Sale", "Return", "Exchange", "Adjustment"]
+        customer:
+          description: Customer being created
+          $ref: "#/components/schemas/Customer"
+
+    CreateCustomerResponse:
+      required:
+        - customer_id
+        - url
+      properties:
+        customer_id:
+          type: string
+        url:
+          type: string
+    SearchOrdersRequest:
+      required:
+        - location_id
+      properties:
+        location_id:
+          description: The ID of the specific location
+          type: string
+        client_id:
+          description: The unique Client ID that we provide
+          type: string
+        customer_id:
+          description: The customer unique ID
+          type: string
+
+    SearchOrdersResponse:
+      required:
+        - results
+      properties:
+        results:
+          description: A list of Orders that match the search Criteria
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+
+    CreateOrderRequest:
+      required:
+        - client_id
+        - location_id
+        - application_id
+        - line_items
+        - amount
+        - transaction_type
+      properties:
+        client_id:
+          description: The unique Client ID that we provide
+          type: string
+        location_id:
+          description: The ID of the specific location
+          type: string
+        application_id:
+          description: The unique Application ID created for the customer
+          type: string
+        line_items:
+          description: The list of cart items based on line_item object
+          type: array
+          items:
+            $ref: "#/components/schemas/LineItem"
+        amount:
+          description: The total amount for the cart
+          type: string
+        transaction_type:
+          description: The transaction type. Can be "Sale", "Return", "Exchange", "Adjustment"
+          type: string
+          enum: ["Sale", "Return", "Exchange", "Adjustment"]
+        customer:
+          description: Customer being created
+          $ref: "#/components/schemas/Customer"
+
+    CreateOrderResponse:
+      required:
+        - order
+        - url
+        - error
+      properties:
+        order:
+          description: The Order that was created
+          $ref: "#/components/schemas/Order"
+        url:
+          type: string
